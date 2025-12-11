@@ -36,11 +36,13 @@ out
 *.md
 !README.md
 
-# Scripts pessoais
+# Scripts pessoais e de desenvolvimento
 COMO_TORNAR_PRIVADO.md
 MEU_FORK.md
 atualizar.sh
 .git-workflow.md
+# Nota: scripts/patch-workbox.js é copiado explicitamente no Dockerfile porque é necessário no build
+scripts/
 
 # Testing
 coverage
