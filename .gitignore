@@ -8,7 +8,8 @@
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -172,5 +173,9 @@ dist
 
 # SvelteKit build / generate output
 .svelte-kit
+
+# Arquivos pessoais de configuração (não devem ser commitados)
+COMO_TORNAR_PRIVADO.md
+MEU_FORK.md
 
 # End of https://www.toptal.com/developers/gitignore/api/macOS,node
