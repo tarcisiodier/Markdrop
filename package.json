@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
-    "build": "vite build",
+    "build": "vite build && node scripts/patch-workbox.js",
     "preview": "vite preview",
     "clean:lint": "biome check --write ./src",
     "clean:lint-unsafe": "biome check --write --unsafe ./src",
