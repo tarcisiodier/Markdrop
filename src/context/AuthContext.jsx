@@ -40,20 +40,41 @@ export const AuthProvider = ({ children }) => {
     fetchUser();
 
     // Listen for auth changes (apenas se Supabase estiver configurado)
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      // Verifica novamente antes de processar mudanças de autenticação
-      if (!isSupabaseConfigured()) {
-        setUser(null);
+    // Nota: onAuthStateChange pode ser chamado mesmo com placeholder, mas validamos dentro do callback
+    let subscription = null;
+    
+    try {
+      const {
+        data: { subscription: authSubscription },
+      } = supabase.auth.onAuthStateChange(async (event, session) => {
+        // Verifica novamente antes de processar mudanças de autenticação
+        // Isso previne processamento de eventos quando Supabase não está configurado
+        if (!isSupabaseConfigured()) {
+          setUser(null);
+          setLoading(false);
+          return;
+        }
+        setUser(session?.user ?? null);
         setLoading(false);
-        return;
-      }
-      setUser(session?.user ?? null);
+      });
+      
+      subscription = authSubscription;
+    } catch (error) {
+      // Se falhar ao criar a subscription (ex: credenciais inválidas), apenas loga o erro
+      console.error("Failed to set up auth state listener:", error);
       setLoading(false);
-    });
+    }
 
-    return () => subscription.unsubscribe();
+    return () => {
+      if (subscription) {
+        try {
+          subscription.unsubscribe();
+        } catch (error) {
+          // Ignora erros ao fazer unsubscribe (pode falhar se já foi desinscrito)
+          console.warn("Error unsubscribing from auth state:", error);
+        }
+      }
+    };
   }, [fetchUser]);
 
   const logout = useCallback(async () => {
