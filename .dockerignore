@@ -41,8 +41,7 @@ COMO_TORNAR_PRIVADO.md
 MEU_FORK.md
 atualizar.sh
 .git-workflow.md
-# Nota: scripts/patch-workbox.js é copiado explicitamente no Dockerfile porque é necessário no build
-scripts/
+# Nota: scripts/ não é excluído porque scripts/patch-workbox.js é necessário no build
 
 # Testing
 coverage

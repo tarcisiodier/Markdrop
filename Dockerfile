@@ -15,10 +15,8 @@ COPY package.json package-lock.json ./
 # Instalar dependências
 RUN npm ci
 
-# Copiar script de patch necessário para o build
-COPY scripts/patch-workbox.js ./scripts/
-
-# Copiar código fonte (scripts/ está no .dockerignore, mas copiamos o necessário acima)
+# Copiar código fonte
+# Nota: scripts/patch-workbox.js é incluído via exceção no .dockerignore
 COPY . .
 
 # Build da aplicação
