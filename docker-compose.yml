@@ -12,7 +12,7 @@ services:
         - VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY:-}
     container_name: markdrop-app
     ports:
-      - "8080:80"
+      - "8101:80"
     restart: unless-stopped
     networks:
       - markdrop-network
