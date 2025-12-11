@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { logoutUser } from "@/lib/auth";
-import { supabase } from "@/lib/supabase";
+import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 
 const AuthContext = createContext();
 
@@ -11,10 +11,8 @@ export const AuthProvider = ({ children }) => {
   const fetchUser = useCallback(async () => {
     try {
       // Verifica se o Supabase está configurado corretamente
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      if (!supabaseUrl || supabaseUrl.includes("placeholder")) {
+      if (!isSupabaseConfigured()) {
         setUser(null);
-        setLoading(false);
         return;
       }
       
@@ -31,13 +29,26 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    // Verifica se o Supabase está configurado antes de inicializar
+    if (!isSupabaseConfigured()) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
+
     // Get initial session
     fetchUser();
 
-    // Listen for auth changes
+    // Listen for auth changes (apenas se Supabase estiver configurado)
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
+      // Verifica novamente antes de processar mudanças de autenticação
+      if (!isSupabaseConfigured()) {
+        setUser(null);
+        setLoading(false);
+        return;
+      }
       setUser(session?.user ?? null);
       setLoading(false);
     });

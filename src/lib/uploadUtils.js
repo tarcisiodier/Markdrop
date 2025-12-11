@@ -1,9 +1,13 @@
-import { supabase } from "./supabase";
+import { supabase, isSupabaseConfigured } from "./supabase";
 
 const DEFAULT_BUCKET = "markdrop-files";
 
 export const initializeBucket = async () => {
   try {
+    if (!isSupabaseConfigured()) {
+      return { error: "Supabase is not configured" };
+    }
+
     const { data: buckets, error: listError } = await supabase.storage.listBuckets();
 
     if (listError) {
@@ -37,6 +41,10 @@ export const initializeBucket = async () => {
 
 export const uploadFile = async (file, bucket = DEFAULT_BUCKET, folder = "") => {
   try {
+    if (!isSupabaseConfigured()) {
+      return { error: "Supabase is not configured" };
+    }
+
     const maxSize = 10 * 1024 * 1024;
     if (file.size > maxSize) {
       return { error: "File size exceeds 10MB limit" };
@@ -94,6 +102,10 @@ export const uploadImage = async (file) => {
 
 export const deleteFile = async (filePath, bucket = DEFAULT_BUCKET) => {
   try {
+    if (!isSupabaseConfigured()) {
+      return { error: "Supabase is not configured" };
+    }
+
     if (!filePath) {
       return { error: "No file path provided" };
     }
@@ -112,6 +124,10 @@ export const deleteFile = async (filePath, bucket = DEFAULT_BUCKET) => {
 
 export const getSignedUrl = async (filePath, bucket = DEFAULT_BUCKET) => {
   try {
+    if (!isSupabaseConfigured()) {
+      return { error: "Supabase is not configured" };
+    }
+
     if (!filePath) {
       return { error: "No file path provided" };
     }
@@ -130,6 +146,10 @@ export const getSignedUrl = async (filePath, bucket = DEFAULT_BUCKET) => {
 
 export const ensureBucketExists = async () => {
   try {
+    if (!isSupabaseConfigured()) {
+      return { error: "Supabase is not configured" };
+    }
+
     const { error } = await supabase.storage.from(DEFAULT_BUCKET).list("", { limit: 1 });
 
     if (error?.statusCode === 404) {
