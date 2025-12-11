@@ -1,0 +1,32 @@
+version: '3.8'
+
+# Docker Compose para desenvolvimento
+# Use: docker-compose -f docker-compose.dev.yml up
+
+services:
+  app-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: markdrop-dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.vite
+    environment:
+      - VITE_SUPABASE_URL=${VITE_SUPABASE_URL:-}
+      - VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY:-}
+      - NODE_ENV=development
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    networks:
+      - markdrop-network
+
+networks:
+  markdrop-network:
+    driver: bridge
+
