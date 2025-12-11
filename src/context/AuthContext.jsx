@@ -10,6 +10,14 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUser = useCallback(async () => {
     try {
+      // Verifica se o Supabase está configurado corretamente
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      if (!supabaseUrl || supabaseUrl.includes("placeholder")) {
+        setUser(null);
+        setLoading(false);
+        return;
+      }
+      
       const {
         data: { user },
       } = await supabase.auth.getUser();
